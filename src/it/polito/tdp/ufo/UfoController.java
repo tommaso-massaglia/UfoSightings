@@ -5,6 +5,7 @@
 package it.polito.tdp.ufo;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.ufo.model.AnnoCount;
@@ -35,6 +36,33 @@ public class UfoController {
 
     @FXML
     void handleAnalizza(ActionEvent event) {
+    	String stato = boxStato.getValue();
+    	if(stato == null) {
+    		txtResult.appendText("Devi selezionare uno stato!");
+    		return;
+    	}
+    	List<String> predecessori = this.model.getPredecessori(stato);
+    	List<String> successori = this.model.getSuccessori(stato);
+    	List<String> raggiungibili = this.model.getRaggiungibili(stato);
+    	
+    	txtResult.clear();
+    	
+    	txtResult.appendText("PREDECESSORI: \n");
+    	for(String s : predecessori)
+    		txtResult.appendText(s + "\n");
+    	
+    	txtResult.appendText("SUCCESSORI: \n");
+    	for(String s : successori)
+    		txtResult.appendText(s + "\n");
+    	
+    	txtResult.appendText("RAGGIUNGIBILI: \n");
+    	for(String s : raggiungibili)
+    		txtResult.appendText(s + "\n");
+
+    }
+
+    @FXML
+    void handleAvvistamenti(ActionEvent event) {
     	AnnoCount anno = boxAnno.getValue();
     	if(anno == null) {
     		txtResult.appendText("Devi selezionare un anno!");
@@ -46,17 +74,21 @@ public class UfoController {
     	txtResult.appendText("\n# archi: " + this.model.getNarchi());
     	
     	this.boxStato.getItems().addAll(this.model.getStati());
-
-    }
-
-    @FXML
-    void handleAvvistamenti(ActionEvent event) {
-    	
     }
 
     @FXML
     void handleSequenza(ActionEvent event) {
-
+    	String stato = boxStato.getValue();
+    	if(stato == null) {
+    		txtResult.appendText("Devi selezionare uno stato!");
+    		return;
+    	}
+    	
+    	List<String> percorso = this.model.getPercorsoMassimo(stato);
+    	txtResult.clear();
+    	txtResult.appendText("PERCORSO MASSIMO: \n\n");
+    	for(String s : percorso)
+    		txtResult.appendText(s + " - ");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

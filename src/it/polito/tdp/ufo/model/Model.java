@@ -13,6 +13,34 @@ import org.jgrapht.traverse.DepthFirstIterator;
 import it.polito.tdp.ufo.db.SightingsDAO;
 
 public class Model {
+	
+	
+	//PER LA RICORSIONE
+	
+	//1 struttura dati "finale"
+	private List<String> ottima; //è una lista di stati (STRING) in cui
+	// c'è lo stato di partenza, e un insieme di altri stati (non ripetuti)
+	
+	
+	//2 struttura dati parziale
+	// una lista definita nel metodo ricorsivo
+	
+	//3 condizione di terminazione
+	//dopo un determinato nodo, non ci sono più successori che non ho considerato
+	
+	//4 generare una nuova soluzione a partire da una soluzione parziale
+	//dato l'ultimo nodo inserito in parziale, considero tutti i successori di quel
+	//nodo che non ho ancora considerato
+
+	//5 filtro
+	//alla fine, ritornerò una sola soluzione -> quella per cui la size() è massima
+	
+	//6 livello di ricorsione
+	//lunghezza del percorso parziale
+	
+	//7 il caso iniziale
+	//parziale contiene il mio stato di partenza
+	
 
 	private SightingsDAO dao;
 	private List<String> stati;
@@ -75,11 +103,49 @@ public class Model {
 	
 	public List<String> getRaggiungibili(String stato){
 		List<String> raggiungibili = new LinkedList<>();
-		DepthFirstIterator dp = new DepthFirstIterator(this.grafo);
+		DepthFirstIterator<String,DefaultEdge> dp = 
+				new DepthFirstIterator<String,DefaultEdge>(this.grafo,stato);
 		
-	
+		dp.next();
+		
+		while (dp.hasNext()) {
+			raggiungibili.add(dp.next());
+		}
 		
 		return raggiungibili;
+	}
+	
+	public List<String> getPercorsoMassimo(String partenza){
+		this.ottima = new LinkedList<String>();
+		List<String> parziale = new LinkedList<String>();
+		parziale.add(partenza);
+	
+		cercaPercorso(parziale);
+		
+		return this.ottima;
+	}
+
+	private void cercaPercorso(List<String> parziale) {
+		
+				
+		//ottengo tutti i candidati
+		List<String> candidati = this.getSuccessori(parziale.get(parziale.size()-1));
+		for(String candidato : candidati) {
+			if(!parziale.contains(candidato)) {
+				//è un candidato che non ho ancora considerato
+				parziale.add(candidato);
+				this.cercaPercorso(parziale);
+				parziale.remove(parziale.size()-1);
+			}
+		}
+		
+		
+		//vedere se la soluzione corrente è migliore della ottima corrente
+		if(parziale.size() > ottima.size()) {
+			this.ottima = new LinkedList(parziale);
+		}
+		
+		
 	}
 	
 	
