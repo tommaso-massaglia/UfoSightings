@@ -3,7 +3,7 @@ package it.polito.tdp.ufo.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Sighting {
+public class Sighting implements Comparable<Sighting>{
 	private int id ;
 	private LocalDateTime datetime ;
 	private String city ;
@@ -134,6 +134,11 @@ public class Sighting {
 	public String toString() {
 		return String.format("Sighting [datetime=%s, city=%s, state=%s, country=%s, shape=%s, duration=%s]", datetime,
 				city, state, country, shape, duration);
+	}
+
+	@Override
+	public int compareTo(Sighting arg0) {
+		return -this.datetime.compareTo(arg0.getDatetime());
 	}
 
 }
